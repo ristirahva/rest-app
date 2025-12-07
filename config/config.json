@@ -1,0 +1,21 @@
+{
+    "server": {
+        "host": "localhost",
+        "port": "8080"
+    },
+    "database": {
+        "host": "localhost",
+        "port": "5432",
+        "username": "postgres",
+        "password": "admin",
+        "name": "barrel"
+    },
+    "logging": {
+        "level": "debug",
+        "output": "stdout"
+    },
+    "validation": {
+        "min_barrel_capacity": "3",
+        "max_barrel_capacity": "500"
+    }
+}
