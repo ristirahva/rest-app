@@ -15,14 +15,12 @@ func NewDrinkInBarrelRepository(db *gorm.DB) *DrinkInBarrelRepository {
     }
 }
 
-// Специфичные методы для DrinkInBarrel
-
-// список напитков в бочках
+// Список напитков в бочках
 
 func (r *DrinkInBarrelRepository) FindActiveBarrelOccupations() ([]models.DrinkInBarrel, error) {
     var occupations []models.DrinkInBarrel
     now := time.Now()
-    err := r.db.Where("date_start <= ? AND (date_end IS NULL OR date_end >= ?)", now, now).
+    err := r.db.Where("date_start IS NOT NULL ? AND date_end IS NULL", now, now).
         Preload("Barrel").
         Preload("Drink").
         Find(&occupations).Error

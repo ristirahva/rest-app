@@ -31,7 +31,7 @@ func (r *BarrelRepository) FindByWood(woodID uint) ([]models.Barrel, error) {
 
 // список всех бочек с залитыми в них напитками
 
-func (r *BarrelRepository) FindBarrelsWithCurrentDrink() ([]models.Barrel, error) {
+func (r *BarrelRepository) FindNonEmptyBarrels() ([]models.Barrel, error) {
     var barrels []models.Barrel
     now := time.Now()
     
@@ -52,6 +52,8 @@ func (r *BarrelRepository) FindBarrelsWithCurrentDrink() ([]models.Barrel, error
 // drinkID      - идентификатор заливаемого дистиллята
 // dateStart    - дата заливки
 // alcoholStart - крепость дистиллята на дату заливки
+
+// TODO сделать проверку dateStart <= now
 
 func (r *BarrelRepository) AddDrinkToBarrel(barrelID, drinkID uint, dateStart time.Time, alcoholStart *int, description string) error {
     drinkInBarrel := models.DrinkInBarrel{

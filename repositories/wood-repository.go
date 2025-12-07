@@ -40,13 +40,3 @@ func (r *WoodRepository) FindWithBarrels() ([]models.Wood, error) {
     return woods, err
 }
 
-// ???
-func (r *WoodRepository) GetWoodBarrelStatistics() ([]map[string]interface{}, error) {
-    var result []map[string]interface{}
-    err := r.db.Model(&models.Wood{}).
-        Select("wood.id, wood.name, COUNT(barrels.id) as barrel_count, SUM(barrels.volume) as total_volume").
-        Joins("LEFT JOIN barrels ON barrels.wood_id = wood.id").
-        Group("wood.id, wood.name").
-        Scan(&result).Error
-    return result, err
-}
