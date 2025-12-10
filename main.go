@@ -7,13 +7,16 @@ import (
 
     "github.com/ristirahva/rest-app/config"
     "github.com/ristirahva/rest-app/handlers"
+    "github.com/ristirahva/rest-app/services"
+    "github.com/ristirahva/rest-app/repositories"
+    "github.com/ristirahva/rest-app/db"
 )
                                                                                            
 func main() {
 
-    cfg, err := config.LoadConfig("config/config.json")
+    cfg, err := config.LoadConfig("config/config.json")            
     if err != nil {
-        log.Fatalf("Failed to load config: %v", err)
+        log.Fatalf("Невозможно прочитать конфинурационные настройки: %v", err)
     }
   
     fmt.Printf("Server host: %s\n", cfg.Server.Host)
@@ -21,8 +24,18 @@ func main() {
 
     router := mux.NewRouter()
     api := router.PathPrefix("/api/v1/barrel-aging").Subrouter()
+
+    dbConn, dbErr := db.DbConnect()
+    if (dbErr != nil) {
+        log.Fatal("База данных недоступна: ", dbErr)
+        return
+    } 
+    barrelRepository := repositories.NewBarrelRepository(dbConn)
+    drinkInBarrelRepository := repositories.NewDrinkInBarrelRepository(dbConn)
+    barrelService := services.NewBarrelService(barrelRepository, drinkInBarrelRepository) 
+    barrelHandler := handlers.NewBarrelHandler(*barrelService)
     
-    api.HandleFunc("/barrel", handlers.GetBarrels).Methods("GET")
+    api.HandleFunc("/barrel", barrelHandler.GetBarrels).Methods("GET")
     api.HandleFunc("/barrel", handlers.AddBarrel).Methods("POST")
     api.HandleFunc("/barrel", handlers.UpdateBarrel).Methods("PUT")
     api.HandleFunc("/barrel", handlers.DeleteBarrel).Methods("DELETE")

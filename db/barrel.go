@@ -1,15 +1,15 @@
 package db
 
-// деревянная бочка для созревания дистиллятов
+// РґРµСЂРµРІСЏРЅРЅР°СЏ Р±РѕС‡РєР° РґР»СЏ СЃРѕР·СЂРµРІР°РЅРёСЏ РґРёСЃС‚РёР»Р»СЏС‚РѕРІ
 
 type Barrel struct {
     ID          uint   `gorm:"primaryKey;autoIncrement"`
-    WoodID      *uint  `gorm:"not null"`// Внешний ключ 
-    Wood        *Wood  `gorm:"foreignKey:WoodID"` // связь belongs to
+    WoodID      *uint  `gorm:"not null"`// Р’РЅРµС€РЅРёР№ РєР»СЋС‡ 
+    Wood        *Wood  `gorm:"foreignKey:WoodID"` // СЃРІСЏР·СЊ belongs to
     Volume      int    `gorm:"not null"`
     Description string `gorm:"type:varchar(255)"`
 
- // Связь many2many с напитками через таблицу drink_in_barrel
+ // РЎРІСЏР·СЊ many2many СЃ РЅР°РїРёС‚РєР°РјРё С‡РµСЂРµР· С‚Р°Р±Р»РёС†Сѓ drink_in_barrel
     Drinks []Drink `gorm:"many2many:drink_in_barrel;"`
 }
 

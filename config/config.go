@@ -27,8 +27,8 @@ type Config struct {
     } `json:"logging"`
 
     Validation struct{
-        MinBarrelCapacity string `json:"min-barrel-capacity"`
-        MaxBarrelCapacity string `json:"max-barrel-capacity"`
+        MinBarrelCapacity int `json:"min_barrel_capacity"`
+        MaxBarrelCapacity int `json:"max_barrel_capacity"`
     } `json:"validation"`
 }
 

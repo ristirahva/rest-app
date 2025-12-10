@@ -1,5 +1,5 @@
 package services
-
+/*
 import (
     "context"
     "fmt"
@@ -78,3 +78,4 @@ func (s *WoodService) SearchWoodsByNameLatin(ctx context.Context, latinName stri
     }
     return s.repo.FindByNameLatin(latinName)
 }
+*/

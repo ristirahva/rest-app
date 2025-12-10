@@ -2,23 +2,26 @@ package repositories
 
 import (
     "time"
-    "github.com/ristirahva/rest-app/models"
+    "gorm.io/gorm"
+
+    "github.com/ristirahva/rest-app/db"
 )
 
 type DrinkInBarrelRepository struct {
-    BaseRepository[models.DrinkInBarrel]
+    db *gorm.DB
 }
 
 func NewDrinkInBarrelRepository(db *gorm.DB) *DrinkInBarrelRepository {
     return &DrinkInBarrelRepository{
-        BaseRepository: *NewBaseRepository[models.DrinkInBarrel](db),
+        db: db,
     }
 }
 
+
 // Список напитков в бочках
 
-func (r *DrinkInBarrelRepository) FindActiveBarrelOccupations() ([]models.DrinkInBarrel, error) {
-    var occupations []models.DrinkInBarrel
+func (r *DrinkInBarrelRepository) FindActiveBarrelOccupations() ([]db.DrinkInBarrel, error) {
+    var occupations []db.DrinkInBarrel
     now := time.Now()
     err := r.db.Where("date_start IS NOT NULL ? AND date_end IS NULL", now, now).
         Preload("Barrel").
@@ -33,8 +36,8 @@ func (r *DrinkInBarrelRepository) FindActiveBarrelOccupations() ([]models.DrinkI
 //
 // возврат: список выдерживавшихся в бочке напитков, отсортированный по убыванию дат
 
-func (r *DrinkInBarrelRepository) GetBarrelHistory(barrelID uint) ([]models.DrinkInBarrel, error) {
-    var history []models.DrinkInBarrel
+func (r *DrinkInBarrelRepository) GetBarrelHistory(barrelID uint) ([]db.DrinkInBarrel, error) {
+    var history []db.DrinkInBarrel
     err := r.db.Where("barrel_id = ?", barrelID).
         Preload("Drink").
         Order("date_start DESC").
@@ -45,7 +48,7 @@ func (r *DrinkInBarrelRepository) GetBarrelHistory(barrelID uint) ([]models.Drin
 //?????
 
 func (r *DrinkInBarrelRepository) GetDrinkBarrelDuration(drinkID, barrelID uint) (time.Duration, error) {
-    var occupation models.DrinkInBarrel
+    var occupation db.DrinkInBarrel
     err := r.db.Where("drink_id = ? AND barrel_id = ?", drinkID, barrelID).
         First(&occupation).Error
     if err != nil {
@@ -61,3 +64,4 @@ func (r *DrinkInBarrelRepository) GetDrinkBarrelDuration(drinkID, barrelID uint)
     
     return endTime.Sub(occupation.DateStart), nil
 }
+

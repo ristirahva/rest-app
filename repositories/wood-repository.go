@@ -1,24 +1,24 @@
 package repositories
 
 import (
-    "github.com/ristirahva/rest-app/models"
+    "gorm.io/gorm"
+
+    "github.com/ristirahva/rest-app/db"
 )
 
 type WoodRepository struct {
-    BaseRepository[models.Wood]
+    db *gorm.DB
 }
-
-// создание репозитория
 
 func NewWoodRepository(db *gorm.DB) *WoodRepository {
     return &WoodRepository{
-        BaseRepository: *NewBaseRepository[models.Wood](db),
+        db: db,
     }
 }
 
 // ???
-func (r *WoodRepository) FindByName(name string) (*models.Wood, error) {
-    var wood models.Wood
+func (r *WoodRepository) FindByName(name string) (*db.Wood, error) {
+    var wood db.Wood
     err := r.db.Where("name = ?", name).First(&wood).Error
     if err != nil {
         return nil, err
@@ -27,15 +27,15 @@ func (r *WoodRepository) FindByName(name string) (*models.Wood, error) {
 }
 
 // ???
-func (r *WoodRepository) FindByNameLatin(nameLat string) ([]models.Wood, error) {
-    var woods []models.Wood
+func (r *WoodRepository) FindByNameLatin(nameLat string) ([]db.Wood, error) {
+    var woods []db.Wood
     err := r.db.Where("name_lat ILIKE ?", "%"+nameLat+"%").Find(&woods).Error
     return woods, err
 }
 
 // ???
-func (r *WoodRepository) FindWithBarrels() ([]models.Wood, error) {
-    var woods []models.Wood
+func (r *WoodRepository) FindWithBarrels() ([]db.Wood, error) {
+    var woods []db.Wood
     err := r.db.Preload("Barrels").Find(&woods).Error
     return woods, err
 }

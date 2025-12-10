@@ -1,12 +1,12 @@
 package services
-
+/*
 import (
     "context"
     "github.com/ristirahva/rest-app/db"
     "github.com/ristirahva/rest-app/repositories"
 )
 
-// Базовый сервис
+// Р‘Р°Р·РѕРІС‹Р№ СЃРµСЂРІРёСЃ
 
 type BaseService[T any] struct {
     repo *repositories.BaseRepository[T]
@@ -35,3 +35,4 @@ func (s *BaseService[T]) Delete(ctx context.Context, id uint) error {
 func (s *BaseService[T]) GetAll(ctx context.Context, preloads ...string) ([]T, error) {
     return s.repo.FindAll(preloads...)
 }
+*/

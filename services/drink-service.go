@@ -1,5 +1,5 @@
 package services
-
+/*
 import (
     "context"
     "fmt"
@@ -79,3 +79,4 @@ func (s *DrinkService) GetDrinkBarrels(ctx context.Context, drinkID uint) ([]db.
     }
     return drink.Barrels, nil
 }
+*/

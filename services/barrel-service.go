@@ -3,6 +3,7 @@ package services
 import (
     "context"
     "fmt"
+    "log"
     "time"
 
     "github.com/ristirahva/rest-app/config"
@@ -11,14 +12,14 @@ import (
 )
 
 type BarrelService struct {
-    BaseService[db.Barrel]
     repo *repositories.BarrelRepository
+    dibRepo *repositories.DrinkInBarrelRepository
 }
 
-func NewBarrelService(repo *repositories.BarrelRepository) *BarrelService {
+func NewBarrelService(repo *repositories.BarrelRepository, dibRepo *repositories.DrinkInBarrelRepository) *BarrelService {
     return &BarrelService{
-        BaseService: *NewBaseService[db.Barrel](&repo.BaseRepository),
         repo:        repo,
+        dibRepo:     dibRepo,
     }
 }
 
@@ -29,12 +30,12 @@ func (s *BarrelService) CreateBarrel(ctx context.Context, woodID *uint, volume i
         log.Fatalf("Невозможно прочитать конфигурационный файл: %v", err)
     }
 
-    if volume < cfg.MinBarrelCapacity {
-        return nil, fmt.Errorf("Объём бочки не может быть меньше %d", cfg.MinBarrelCapacity)
+    if volume < cfg.Validation.MinBarrelCapacity {
+        return nil, fmt.Errorf("Объём бочки не может быть меньше %d", cfg.Validation.MinBarrelCapacity)
     }
     
-    if volume > cfg.MaxBarrelCapacity {
-        return nil, fmt.Errorf("Объём бочки не может быть больше %d", cfg.MaxBarrelCapacity)
+    if volume > cfg.Validation.MaxBarrelCapacity {
+        return nil, fmt.Errorf("Объём бочки не может быть больше %d", cfg.Validation.MaxBarrelCapacity)
     }
     
     barrel := &db.Barrel{
@@ -50,7 +51,14 @@ func (s *BarrelService) CreateBarrel(ctx context.Context, woodID *uint, volume i
     return barrel, nil
 }
 
-// GetBarrelsByWood возвращает бочки по породе дерева
+// GetAllBarrels список всех бочек
+
+func (s *BarrelService) GetAllBarrels() ([]db.Barrel, error) {
+    return s.repo.FindAll()
+}
+
+
+// GetBarrelsByWood список бочек по породе дерева
 //
 // параметры:
 // 
@@ -67,9 +75,13 @@ func (s *BarrelService) GetBarrelsByWood(ctx context.Context, woodID uint) ([]db
 //
 // возврат: список пустых бочек
 
+// TODO
+
+/*
 func (s *BarrelService) GetAvailableBarrels(ctx context.Context) ([]db.Barrel, error) {
     return s.repo.FindEmptyBarrels()
 }
+*/
 
 // GetBarrelsInUse возвращает занятые бочки
 //
@@ -155,7 +167,7 @@ func (s *BarrelService) EmptyBarrel(ctx context.Context, barrelID uint, alcoholE
 // идентификатор бочки
 
 func (s *BarrelService) GetBarrelHistory(ctx context.Context, barrelID uint) ([]db.DrinkInBarrel, error) {
-    dibRepo := repositories.NewDrinkInBarrelRepository(s.repo.BaseRepository.Db)
-    return dibRepo.GetBarrelHistory(barrelID)
+    //dibRepo := repositories.NewDrinkInBarrelRepository(s.repo.BaseRepository.Db)
+    return s.dibRepo.GetBarrelHistory(barrelID)
 }
 

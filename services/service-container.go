@@ -1,5 +1,6 @@
 package services
 
+/*
 import (
     "gorm.io/gorm"
     "github.com/ristirahva/rest-app/repositories"
@@ -39,3 +40,4 @@ func NewServiceContainer(db *gorm.DB) *ServiceContainer {
         BarrelManagementService: barrelManagementService,
     }
 }
+*/

@@ -1,16 +1,18 @@
 package repositories
 
 import (
-    "github.com/ristirahva/rest-app/models"
+    "gorm.io/gorm"
+
+    "github.com/ristirahva/rest-app/db"
 )
 
 type DrinkRepository struct {
-    BaseRepository[models.Drink]
+    db *gorm.DB
 }
 
 func NewDrinkRepository(db *gorm.DB) *DrinkRepository {
     return &DrinkRepository{
-        BaseRepository: *NewBaseRepository[models.Drink](db),
+        db: db,
     }
 }
 
@@ -18,8 +20,8 @@ func NewDrinkRepository(db *gorm.DB) *DrinkRepository {
 //
 // возврат: список дистиллятов, выдерживающихся в настоящее время в бочках
 
-func (r *DrinkRepository) FindCurrentlyInBarrels() ([]models.Drink, error) {
-    var drinks []models.Drink
+func (r *DrinkRepository) FindCurrentlyInBarrels() ([]db.Drink, error) {
+    var drinks []db.Drink
     err := r.db.Joins("JOIN drink_in_barrel dib ON dib.drink_id = drinks.id").
         Where("dib.date_end IS NULL").
         Group("drinks.id").
@@ -34,8 +36,8 @@ func (r *DrinkRepository) FindCurrentlyInBarrels() ([]models.Drink, error) {
 //
 // возврат: список дистиллятов по бочкам, отсортированный по убыванию дат заливки
 
-func (r *DrinkRepository) GetDrinkHistory(drinkID uint) ([]models.DrinkInBarrel, error) {
-    var history []models.DrinkInBarrel
+func (r *DrinkRepository) GetDrinkHistory(drinkID uint) ([]db.DrinkInBarrel, error) {
+    var history []db.DrinkInBarrel
     err := r.db.Where("drink_id = ?", drinkID).
         Preload("Barrel").
         Preload("Barrel.Wood").
