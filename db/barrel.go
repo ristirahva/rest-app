@@ -13,3 +13,9 @@ type Barrel struct {
     Drinks []Drink `gorm:"many2many:drink_in_barrel;"`
 }
 
+// название таблицы
+
+func (Barrel) TableName() string {
+    return "barrel"
+}
+

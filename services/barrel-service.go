@@ -54,7 +54,9 @@ func (s *BarrelService) CreateBarrel(ctx context.Context, woodID *uint, volume i
 // GetAllBarrels список всех бочек
 
 func (s *BarrelService) GetAllBarrels() ([]db.Barrel, error) {
-    return s.repo.FindAll()
+    barrels, error := s.repo.FindAll()
+    log.Printf("Сервис Список бочек: {}", barrels)
+    return barrels, error
 }
 
 

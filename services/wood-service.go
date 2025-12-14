@@ -1,12 +1,32 @@
 package services
-/*
+
 import (
-    "context"
-    "fmt"
+//    "fmt"
+    "log"
+
     "github.com/ristirahva/rest-app/db"
     "github.com/ristirahva/rest-app/repositories"
 )
 
+type WoodService struct {
+    repo *repositories.WoodRepository
+}
+
+func NewWoodService(repo *repositories.WoodRepository) *WoodService {
+    return &WoodService{
+        repo:        repo,
+    }
+}
+
+// GetAllWoods список всех материалов
+
+func (s *WoodService) GetAllWoods() ([]db.Wood, error) {
+    woods, error := s.repo.FindAll()
+    log.Printf("Сервис Список материалов: {}", woods)
+    return woods, error
+}
+
+/*
 type WoodService struct {
     BaseService[db.Wood]
     repo *repositories.WoodRepository

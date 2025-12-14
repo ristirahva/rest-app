@@ -1,6 +1,7 @@
 package repositories
 
 import (
+    "log"
     "time"
     "gorm.io/gorm"
 
@@ -27,6 +28,7 @@ func (r *BarrelRepository) Create(barrel *db.Barrel) error {
 func (r *BarrelRepository) FindAll() ([]db.Barrel, error) {
     var barrels []db.Barrel
     err := r.db.Find(&barrels).Error
+    log.Printf("Список бочек: {}", barrels)
     return barrels, err
 }
 

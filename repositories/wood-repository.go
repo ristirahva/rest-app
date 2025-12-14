@@ -3,6 +3,8 @@ package repositories
 import (
     "gorm.io/gorm"
 
+     "log"
+
     "github.com/ristirahva/rest-app/db"
 )
 
@@ -15,6 +17,16 @@ func NewWoodRepository(db *gorm.DB) *WoodRepository {
         db: db,
     }
 }
+
+// список всех материалов
+
+func (r *WoodRepository) FindAll() ([]db.Wood, error) {
+    var woods []db.Wood
+    err := r.db.Find(&woods).Error
+    log.Printf("Список материалов: {}", woods)
+    return woods, err
+}
+
 
 // ???
 func (r *WoodRepository) FindByName(name string) (*db.Wood, error) {

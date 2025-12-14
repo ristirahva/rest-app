@@ -1,6 +1,7 @@
 package handlers
 
 import (
+    "encoding/json"
     "net/http"
     "fmt" 
     "log"
@@ -19,13 +20,30 @@ func NewBarrelHandler(barrelService services.BarrelService) *BarrelHandler {
 }
 
 func (h *BarrelHandler) GetBarrels(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(http.StatusOK)
     log.Println("вызван обработчик GetBarrels")
-    fmt.Fprintf(w, `{"message":"список бочек!"}`)
-    //barrelRepo := repositories.NewBarrelRepository(db)
-    //barrelService := NewBarrelService(barrelRepo)
-    h.barrelService.GetAllBarrels()    
+    barrels, err := h.barrelService.GetAllBarrels()
+
+    if (err != nil) { 
+        w.WriteHeader(http.StatusInternalServerError)
+        json.NewEncoder(w).Encode(ApiResponse{
+            Success: false,
+            Error:   "Внутренняя ошибка сервера",
+            })
+            // В production лучше не показывать детали ошибки клиенту
+        return
+    }    
+
+    w.WriteHeader(http.StatusOK)
+    w.Header().Set("Content-Type", "application/json")
+    
+    json.NewEncoder(w).Encode(barrels)
+/*
+    sendJSON(w, http.StatusOK, map[string]interface{}{
+        "status": "success",
+        "data": barrels,
+        "count": len(barrels),
+    })
+*/
 }
 
 func AddBarrel(w http.ResponseWriter, r *http.Request) {
@@ -45,8 +63,8 @@ func UpdateBarrel(w http.ResponseWriter, r *http.Request) {
 
 
 func DeleteBarrel(w http.ResponseWriter, r *http.Request) {
+    w.WriteHeader(http.StatusNoContent)
     w.Header().Set("Content-Type", "application/json")
-//    w.WriteHeader(http.StatusNoContent)
     w.WriteHeader(http.StatusOK)
     log.Println("вызван обработчик DeleteBarrels")
     fmt.Fprintf(w, `{"message":"Hello, удалить бочку!"}`)
